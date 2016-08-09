@@ -38,7 +38,14 @@ mlDat_user <- ddply(mlDat, ~user_id + age + gender + occupation, summarize, mean
 agePlot <- ggplot(mlDat_user, aes(age)) + geom_histogram(aes(y=..density..), binwidth=1, colour="black", fill="white")
 
 agePlot <- agePlot + geom_density(alpha=.2, fill="#FF6666")
-
 print(agePlot)
-
 ggsave(filename = "agePlot.pdf")
+
+#prepare table for analysis of movies
+mlDat_movie <- ddply(mlDat, ~movie_title + release_date + genre, summarize, mean_rating = mean(rating))
+datesPlot <- ggplot(mlDat_movie, aes(release_date)) + geom_histogram(aes(y=..density..), binwidth=500, colour="black", fill="white")
+#alter axis
+datesPlot <- datesPlot + geom_density(alpha=.2, fill="#FF6666")
+print(datesPlot)
+ggsave(filename = "datesPlot.pdf")
+
