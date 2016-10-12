@@ -101,9 +101,9 @@ for (i in 1:nrow(result)){
 
 # Jaccard Distance to measure the similarity between user profiles, and the movie genre matrix
 print("enter the user to be profiled for")
-tofinduser = 4
+tofinduser = 2
 result2 <- result[tofinduser,] #n th user's profile
-sim_mat <- rbind.data.frame(result2, genre_matrix3)
+sim_mat <- rbind.data.frame(result2, genre_matrix2)
 sim_mat <- data.frame(lapply(sim_mat,function(x){as.integer(x)}))
 #convert data to type integer
 
@@ -125,6 +125,28 @@ movies[rows,2]
 
 # user based collaborative filtering
 library(reshape2)
+
+checkvar <- FALSE
+useridno <- 1;
+towatch1 <- 4;
+towatch2 <- 50;
+towatch3 <- 100;
+if(checkvar == TRUE){
+  #assign already existing ratings to the medium rating of 3
+  ratings$rating <- ifelse(ratings$userId == useridno, 3, ratings$rating)
+  da <- subset(ratings, subset = userId == useridno)
+  for(towatch in c(towatch1,towatch2,towatch3)){
+  if( towatch %in% da$movieId){
+    print("to watch"+towatch)
+    ratings$rating <- ifelse(ratings$userId == useridno & ratings$movieId == towatch, 5, ratings$rating)
+  }
+  else{
+    vec <- c(useridno,towatch,5)
+    ratings <- rbind(ratings,vec)
+  }
+  }
+}
+
 #Create ratings matrix. Rows = userId, Columns = movieId
 ratingmat <- dcast(ratings, userId~movieId, value.var = "rating", na.rm=FALSE)
 ratingmat <- as.matrix(ratingmat[,-1]) #remove userIds
@@ -143,9 +165,11 @@ ratingmat <- as(ratingmat, "realRatingMatrix")
 #Normalize the data
 ratingmat_norm <- normalize(ratingmat)
 
+
 #Create Recommender Model. "UBCF" stands for User-Based Collaborative Filtering
 recommender_model <- Recommender(ratingmat_norm, method = "UBCF", param=list(method="Cosine",nn=30))
-recom <- predict(recommender_model, ratingmat[1], n=10) #Obtain top 10 recommendations for 1st user in dataset
+
+recom <- predict(recommender_model, ratingmat[useridno], n=10) #Obtain top 10 recommendations for 1st user in dataset
 recom_list <- as(recom, "list") #convert recommenderlab object to readable list
 
 #Obtain recommendations
