@@ -7,6 +7,8 @@ Senthil R 2013103602
 
 # Details of the Final Submission - Folder Wise
 
+the final submission folder is "FinalOutput" folder, under which you can find the following folders.
+
 ##Code in R format
 Contains all the code in R format
 
