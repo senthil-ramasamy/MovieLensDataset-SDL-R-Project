@@ -19,7 +19,8 @@ shinyServer(function(input, output) {
   #  1) It is "reactive" and therefore should re-execute automatically
   #     when inputs change
   #  2) Its output type is a plot
-  
+
+recom <- reactive({  
   checkvar <- input$checkboxvalue;
   useridno <- input$useidnoinput;
   towatch1 <- input$tw1;
@@ -71,7 +72,9 @@ shinyServer(function(input, output) {
     recom_result[i] <- movies[as.integer(recom_list[[1]][i]),2]
   }
   
-  output$summary <- renderPrint(recom_result)
+  return(recom_result);
+})
+  output$summary <- renderPrint(recom())
   
   
   })
